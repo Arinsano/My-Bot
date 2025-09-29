@@ -7,24 +7,29 @@ export const config = {
 };
 
 export default async function handler(req) {
-  if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405 });
+  if (req.method !== 'POST') {
+    return new Response('Method Not Allowed', { status: 405 });
+  }
 
   const signature = req.headers.get('x-signature-ed25519');
   const timestamp = req.headers.get('x-signature-timestamp');
-  const body = await req.text(); // NOTE: must read body as text!
+  const body = await req.text(); // Must read as text, not JSON!
 
-  const isValidRequest = verifyKey(body, signature, timestamp, PUBLIC_KEY);
-
-  if (!isValidRequest) {
-    return new Response('Bad request signature.', { status: 401 });
+  const isValid = verifyKey(body, signature, timestamp, PUBLIC_KEY);
+  if (!isValid) {
+    return new Response('Bad request signature', { status: 401 });
   }
 
-  const json = JSON.parse(body);
+  const jsonBody = JSON.parse(body);
 
-  if (json.type === 1) {
-    return new Response(JSON.stringify({ type: 1 }), { status: 200 });
+  if (jsonBody.type === 1) {
+    return new Response(JSON.stringify({ type: 1 }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  // handle other types here...
-  return new Response('ok', { status: 200 });
+  // You can handle other interactions here later
+
+  return new Response('Unhandled interaction', { status: 400 });
 }
