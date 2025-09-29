@@ -1,0 +1,15 @@
+{
+  "name": "discord-bot-ac-mr",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "register": "node commands/register.js",
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "dependencies": {
+    "discord-interactions": "^4.3.0"
+  }
+}
